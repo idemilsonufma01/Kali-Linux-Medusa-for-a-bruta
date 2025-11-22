@@ -1,11 +1,11 @@
-📄 INTRODUÇÃO
+## 📄 INTRODUÇÃO <br>
 Este trabalho documenta uma prática realizada para analisar técnicas de enumeração e ataques de força bruta (Brute Force) utilizando ferramentas de código aberto como Medusa e Nmap, ambas disponíveis no Kali Linux.
 
 👉 O foco principal deste estudo é conhecer o funcionamento e a metodologia desses ataques para, posteriormente, desenvolver e implementar mecanismos de proteção mais eficazes contra eles.
 
 Para conduzir os testes de forma ética e controlada, foram utilizados ambientes vulneráveis e controlados, como as máquinas virtuais Metasploitable 2 e DVWA (Damn Vulnerable Web Application). Os ataques simulados foram executados contra serviços de rede comuns, como FTP, SMB (Server Message Block) e formulários de login web.
 
-⚙️ CONFIGURAÇÃO DO AMBIENTE
+## ⚙️ CONFIGURAÇÃO DO AMBIENTE <br>
 O ambiente de teste foi configurado em máquinas virtuais utilizando o VirtualBox para isolamento e controle.
 
 1. Configuração das VMs: Foram utilizados Kali Linux (como máquina atacante) e Metasploitable 2 (como alvo vulnerável).
@@ -18,7 +18,7 @@ Ambas as VMs foram configuradas para estarem na mesma rede (ex: Rede Interna ou 
 ip a
 Exemplo de IP Alvo: 192.168.56.101
 
-🔓 ATAQUE DE FORÇA BRUTA NO FTP
+## 🔓 ATAQUE DE FORÇA BRUTA NO FTP <br>
 O protocolo FTP (File Transfer Protocol) foi o primeiro alvo para um ataque de força bruta.
 
 Passos Executados:
@@ -38,7 +38,7 @@ medusa -h 192.168.56.101 -U users.txt -P pass.txt -M ftp -t 6
 
 Resultado: Foi obtido sucesso na descoberta de um par de usuário e senha válido (msfadmin:msfadmin) para acesso via FTP.
 
-🌐 ATAQUE DE FORÇA BRUTA VIA WEB (DVWA)
+## 🌐 ATAQUE DE FORÇA BRUTA VIA WEB (DVWA) <br>
 Um formulário de login web no DVWA foi o alvo deste ataque.
 
 Passos Executados:
@@ -57,7 +57,7 @@ medusa -h 192.168.56.101 -U users.txt -P pass.txt -M http \
 
 Resultado: Dessa forma, foi possível obter a senha de acesso para o site do DVWA.
 
-🗄️ PASSWORD SPRAYING EM SMB
+## 🗄️ PASSWORD SPRAYING EM SMB <br>
 O ataque Password Spraying foi testado contra o serviço SMB, visando aplicar um pequeno conjunto de senhas populares a uma grande lista de usuários.
 
 Passos Executados:
@@ -76,7 +76,7 @@ medusa -h 192.168.56.101 -U smb_users.txt -P senhas_spray.txt -M smbnt -t 2 -T 5
 
 Resultado: Foi obtido sucesso com o usuário e senha msfadmin:msfadmin, validando a eficácia do Password Spraying.
 
-🛡️ RECOMENDAÇÕES E MEDIDAS DE PROTEÇÃO
+## 🛡️ RECOMENDAÇÕES E MEDIDAS DE PROTEÇÃO <br>
 Com base na análise da metodologia dos ataques, as seguintes recomendações são propostas para aumentar a segurança:
 
 Autenticação Multifator (MFA): Implementar MFA, pois torna as credenciais obtidas por força bruta inúteis sem o segundo fator.
